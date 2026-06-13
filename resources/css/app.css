@@ -1,9 +1,75 @@
-@import 'tailwindcss';
+/* ═══════════════════════════════════════════════════════
+   StadiumHub — Estilos Personalizados
+   Complementa Bootstrap 5 con la identidad visual del sistema
+   ═══════════════════════════════════════════════════════ */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+/* ─── Variables de color ──────────────────────────────── */
+:root {
+    --sh-primary:   #1a1a2e;   /* Azul marino oscuro (navbar) */
+    --sh-accent:    #16213e;   /* Azul intermedio */
+    --sh-highlight: #0f3460;   /* Azul destacado */
+    --sh-gold:      #e94560;   /* Rojo FIFA (acentos) */
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* ─── Estilos globales ────────────────────────────────── */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main.container {
+    flex: 1; /* Empuja el footer hacia abajo */
+}
+
+/* ─── Cards mejoradas ─────────────────────────────────── */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Tarjetas de estadísticas (para dashboards) ───────── */
+.stat-card {
+    border-left: 4px solid var(--sh-gold);
+}
+
+.stat-card .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--sh-primary);
+}
+
+/* ─── Página de login / registro ─────────────────────── */
+.auth-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--sh-primary) 0%, var(--sh-highlight) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    border-radius: 16px;
+    padding: 2.5rem;
+}
+
+/* ─── Badges de estado de tareas ─────────────────────── */
+.badge-pendiente    { background-color: #ffc107; color: #000; }
+.badge-en-progreso  { background-color: #0d6efd; }
+.badge-completada   { background-color: #198754; }
+
+/* ─── Tabla de historial ──────────────────────────────── */
+.table-historial td {
+    vertical-align: middle;
+    font-size: 0.9rem;
 }
