@@ -94,14 +94,13 @@ Route::middleware(['auth', 'rol.jefe'])
     });
 
 // ─── RUTAS DEL COMITÉ FIFA ────────────────────────────────────────────────────
-// Middleware 'auth': require sesión iniciada
-// Middleware 'rol.comite': require rol_id = 1
-// Será completado por Sebastian Gomez (feature/dashboard-comite)
 Route::middleware(['auth', 'rol.comite'])
     ->prefix('comite')
     ->name('comite.')
     ->group(function () {
-        // Las rutas de esta sección se añaden en feature/dashboard-comite
-    });
 
+        // Dashboard global de auditoría
+        Route::get('/dashboard', [\App\Http\Controllers\ComiteController::class, 'dashboard'])
+            ->name('dashboard');
+    });
  
