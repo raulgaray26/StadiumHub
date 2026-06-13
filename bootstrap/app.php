@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,11 +10,23 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withMiddleware(function (Middleware $middleware) {
+        /*
+        |----------------------------------------------------------------------
+        | Alias de Middlewares Personalizados de StadiumHub
+        |----------------------------------------------------------------------
+        | Registramos nuestros tres middlewares de rol con nombres cortos
+        | para poder usarlos fácilmente en las rutas:
+        |   ->middleware('rol.comite')
+        |   ->middleware('rol.jefe')
+        |   ->middleware('rol.tecnico')
+        */
+        $middleware->alias([
+            'rol.comite'  => \App\Http\Middleware\EsComite::class,
+            'rol.jefe'    => \App\Http\Middleware\EsJefe::class,
+            'rol.tecnico' => \App\Http\Middleware\EsTecnico::class,
+        ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
-        );
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
     })->create();
