@@ -52,39 +52,6 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth');
 
 // ─── RUTAS DEL TÉCNICO DE CAMPO ───────────────────────────────────────────────
-// Middleware 'auth': require sesión iniciada
-// Middleware 'rol.tecnico': require rol_id = 3
-// Será completado por Sebastian Gomez (feature/dashboard-tecnico)
-Route::middleware(['auth', 'rol.tecnico'])
-    ->prefix('tecnico')
-    ->name('tecnico.')
-    ->group(function () {
-        // Las rutas de esta sección se añaden en feature/dashboard-tecnico
-    });
-
-// ─── RUTAS DEL JEFE DE MANTENIMIENTO ─────────────────────────────────────────
-// Middleware 'auth': require sesión iniciada
-// Middleware 'rol.jefe': require rol_id = 2
-// Será completado por Sebastian Gomez (feature/dashboard-jefe)
-Route::middleware(['auth', 'rol.jefe'])
-    ->prefix('jefe')
-    ->name('jefe.')
-    ->group(function () {
-        // Las rutas de esta sección se añaden en feature/dashboard-jefe
-    });
-
-// ─── RUTAS DEL COMITÉ FIFA ────────────────────────────────────────────────────
-// Middleware 'auth': require sesión iniciada
-// Middleware 'rol.comite': require rol_id = 1
-// Será completado por Sebastian Gomez (feature/dashboard-comite)
-Route::middleware(['auth', 'rol.comite'])
-    ->prefix('comite')
-    ->name('comite.')
-    ->group(function () {
-        // Las rutas de esta sección se añaden en feature/dashboard-comite
-    });
-
- // ─── RUTAS DEL TÉCNICO DE CAMPO ───────────────────────────────────────────────
 Route::middleware(['auth', 'rol.tecnico'])
     ->prefix('tecnico')
     ->name('tecnico.')
@@ -98,3 +65,43 @@ Route::middleware(['auth', 'rol.tecnico'])
         Route::patch('/tarea/{id}/completar', [\App\Http\Controllers\TecnicoController::class, 'completarTarea'])
             ->name('tarea.completar');
     });
+
+// ─── RUTAS DEL JEFE DE MANTENIMIENTO ─────────────────────────────────────────
+Route::middleware(['auth', 'rol.jefe'])
+    ->prefix('jefe')
+    ->name('jefe.')
+    ->group(function () {
+
+        // Panel principal del jefe
+        Route::get('/dashboard', [\App\Http\Controllers\JefeController::class, 'dashboard'])
+            ->name('dashboard');
+
+        // Mostrar formulario de creación de tarea
+        Route::get('/tarea/crear', [\App\Http\Controllers\JefeController::class, 'crearTareaForm'])
+            ->name('tarea.crear');
+
+        // Guardar nueva tarea (POST)
+        Route::post('/tarea/crear', [\App\Http\Controllers\JefeController::class, 'storeTarea'])
+            ->name('tarea.store');
+
+        // Mostrar formulario de asignación de técnicos
+        Route::get('/tarea/{id}/asignar', [\App\Http\Controllers\JefeController::class, 'asignarForm'])
+            ->name('tarea.asignar');
+
+        // Procesar asignación (POST)
+        Route::post('/tarea/{id}/asignar', [\App\Http\Controllers\JefeController::class, 'asignarTarea'])
+            ->name('tarea.asignar.store');
+    });
+
+// ─── RUTAS DEL COMITÉ FIFA ────────────────────────────────────────────────────
+// Middleware 'auth': require sesión iniciada
+// Middleware 'rol.comite': require rol_id = 1
+// Será completado por Sebastian Gomez (feature/dashboard-comite)
+Route::middleware(['auth', 'rol.comite'])
+    ->prefix('comite')
+    ->name('comite.')
+    ->group(function () {
+        // Las rutas de esta sección se añaden en feature/dashboard-comite
+    });
+
+ 
