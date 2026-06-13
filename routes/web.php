@@ -83,3 +83,18 @@ Route::middleware(['auth', 'rol.comite'])
     ->group(function () {
         // Las rutas de esta sección se añaden en feature/dashboard-comite
     });
+
+ // ─── RUTAS DEL TÉCNICO DE CAMPO ───────────────────────────────────────────────
+Route::middleware(['auth', 'rol.tecnico'])
+    ->prefix('tecnico')
+    ->name('tecnico.')
+    ->group(function () {
+
+        // Dashboard principal: lista de tareas asignadas
+        Route::get('/dashboard', [\App\Http\Controllers\TecnicoController::class, 'dashboard'])
+            ->name('dashboard');
+
+        // Marcar tarea como completada (PATCH = actualización parcial semántica)
+        Route::patch('/tarea/{id}/completar', [\App\Http\Controllers\TecnicoController::class, 'completarTarea'])
+            ->name('tarea.completar');
+    });
