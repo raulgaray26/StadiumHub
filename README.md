@@ -70,8 +70,8 @@ php artisan serve
 
 | Indicador | Valor |
 |---|---|
-| Commits totales | 33 |
-| Pull Requests fusionados | 12/16 |
+| Commits totales | 37 |
+| Pull Requests fusionados | 13 |
 | Última actualización | 2026-06-14 |
 
 ---
