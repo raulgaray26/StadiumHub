@@ -24,52 +24,74 @@ use Illuminate\View\View;
 class ComiteController extends Controller
 {
     /**
-     * Dashboard de auditoría global del Comité FIFA.
-     *
-     * Usa paginación en el historial para evitar cargar miles de registros.
-     * El eager loading ('with') previene el problema N+1 de consultas.
-     *
-     * @return View
+     * Dashboard global con filtros por estadio y tipo de acción.
+     * Recibe parámetros GET: ?estadio_id=X&accion=Y
      */
-    public function dashboard(): View
+    public function dashboard(Request $request): View
     {
-        // ─── Estadísticas globales del sistema ────────────────────────────
+        // ─── Estadísticas globales ─────────────────────────────────────
         $totalTareas       = Tarea::count();
         $tareasCompletadas = Tarea::where('estado', 'Completada')->count();
         $tareasPendientes  = Tarea::where('estado', 'Pendiente')->count();
         $totalUsuarios     = Usuario::count();
         $totalEstadios     = Estadio::count();
 
-        // ─── Historial de auditoría paginado ──────────────────────────────
-        // Con eager loading de relaciones para evitar N+1 queries
-        $historial = HistorialTarea::with([
-                'tarea',          // Datos de la tarea
-                'usuario',        // Usuario que ejecutó la acción
-                'creador',        // Usuario que originó la acción (ej: jefe que asignó)
-            ])
-            ->orderBy('timestamp', 'desc') // Más recientes primero
-            ->paginate(25);                // 25 registros por página
+        // ─── Filtros (vienen de GET params del formulario) ─────────────
+        $filtroEstadio = $request->input('estadio_id');   // null si no se filtra
+        $filtroAccion  = $request->input('accion');        // null si no se filtra
 
-        // ─── Estado de cada estadio sede ──────────────────────────────────
-        // withCount() añade {relation}_count sin cargar todos los registros
-        $estadios = Estadio::withCount(['tareas', 'usuarios'])
-            ->get()
+        // ─── Historial con filtros opcionales y eager loading ──────────
+        $query = HistorialTarea::with(['tarea', 'usuario', 'creador'])
+            ->orderBy('timestamp', 'desc');
+
+        if ($filtroEstadio) {
+            // Filtrar por estadio: join con tareas para acceder a estadio_id
+            $query->whereHas('tarea', function ($q) use ($filtroEstadio) {
+                $q->where('estadio_id', $filtroEstadio);
+            });
+        }
+
+        if ($filtroAccion) {
+            $query->where('accion', $filtroAccion);
+        }
+
+        $historial = $query->paginate(15)->withQueryString();
+        // withQueryString() preserva los filtros al paginar
+
+        // ─── Estado de estadios con contadores ─────────────────────────
+        $estadios = Estadio::withCount(['tareas', 'usuarios'])->get()
             ->map(function ($estadio) {
-                // Calcular tareas completadas por estadio para la barra de progreso
                 $estadio->tareas_completadas = Tarea::where('estadio_id', $estadio->estadio_id)
-                    ->where('estado', 'Completada')
-                    ->count();
+                    ->where('estado', 'Completada')->count();
                 return $estadio;
             });
 
+        // ─── Opciones para los dropdowns de filtro ─────────────────────
+        $todosEstadios = Estadio::orderBy('nombre')->get();
+        $acciones      = ['Creada', 'Asignada', 'Completada', 'Editada'];
+
         return view('comite.dashboard', compact(
-            'totalTareas',
-            'tareasCompletadas',
-            'tareasPendientes',
-            'totalUsuarios',
-            'totalEstadios',
-            'historial',
-            'estadios'
+            'totalTareas', 'tareasCompletadas', 'tareasPendientes',
+            'totalUsuarios', 'totalEstadios',
+            'historial', 'estadios',
+            'todosEstadios', 'acciones',
+            'filtroEstadio', 'filtroAccion'
         ));
+    }
+
+    /**
+     * Vista de todas las tareas de un estadio específico.
+     * Ruta: GET /comite/estadio/{id}
+     */
+    public function verEstadio(int $id): View
+    {
+        $estadio = Estadio::findOrFail($id);
+
+        $tareas = Tarea::where('estadio_id', $id)
+            ->with(['tipoTarea', 'creador', 'usuariosAsignados'])
+            ->orderBy('fecha_limite', 'asc')
+            ->get();
+
+        return view('comite.estadio', compact('estadio', 'tareas'));
     }
 }
