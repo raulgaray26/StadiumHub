@@ -133,4 +133,10 @@ class Usuario extends Authenticatable
     {
         return (int) $this->rol_id === 3;
     }
+
+    /** Como la tabla usuarios no incluye esa columna, se devuelve null para deshabilitarla*/
+    public function getRememberTokenName(): ?string
+    {
+        return null;
+    }
 }
