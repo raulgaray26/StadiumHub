@@ -102,5 +102,9 @@ Route::middleware(['auth', 'rol.comite'])
         // Dashboard global de auditoría
         Route::get('/dashboard', [\App\Http\Controllers\ComiteController::class, 'dashboard'])
             ->name('dashboard');
+
+        // Detalle de tareas por estadio
+        Route::get('/estadio/{id}', [\App\Http\Controllers\ComiteController::class, 'verEstadio'])
+            ->name('estadio');
     });
  
