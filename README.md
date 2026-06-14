@@ -17,6 +17,10 @@ Materia: Lenguajes de la Programación | Periodo: 2026-1 | Estado: Completado
 
 https://github.com/user-attachments/assets/c26e8088-13f9-4b4f-a86d-2959acaf9282
 
+
+## Modelo Relacional de la Base de Datos
+[Modelo Relacional](docs/bd/modelo-relacional.png)
+
 ---
 
 ## Funcionalidad
@@ -70,7 +74,7 @@ php artisan serve
 
 | Indicador | Valor |
 |---|---|
-| Commits totales | 37 |
+| Commits totales | 39 |
 | Pull Requests fusionados | 13 |
 | Última actualización | 2026-06-14 |
 
