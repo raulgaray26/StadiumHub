@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/c26e8088-13f9-4b4f-a86d-2959acaf9282
 
 
 ## Modelo Relacional de la Base de Datos
-[Modelo Relacional](docs/bd/modelo-relacional.png)
+![Modelo Relacional](docs/bd/modelo-relacional.png)
 
 ---
 
@@ -74,7 +74,7 @@ php artisan serve
 
 | Indicador | Valor |
 |---|---|
-| Commits totales | 39 |
+| Commits totales | 40 |
 | Pull Requests fusionados | 13 |
 | Última actualización | 2026-06-14 |
 
