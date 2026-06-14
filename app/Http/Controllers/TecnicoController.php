@@ -60,10 +60,10 @@ class TecnicoController extends Controller
      * Marca una tarea como completada para el técnico autenticado.
      *
      * Flujo:
-     *   1. Encuentra el registro en 'tarea_user' para este técnico y tarea.
-     *   2. Actualiza el estado y la fecha de completado.
-     *   3. Crea un registro en 'historial_tareas' para auditoría.
-     *   4. Redirige al dashboard con mensaje de éxito.
+     * 1. Encuentra el registro en 'tarea_user' para este técnico y tarea.
+     * 2. Actualiza el estado y la fecha de completado.
+     * 3. Crea un registro en 'historial_tareas' para auditoría.
+     * 4. Redirige al dashboard con mensaje de éxito.
      *
      * @param  Request  $request  Puede incluir 'observaciones' opcionales.
      * @param  int      $id       ID de la tarea a completar (tarea_id).
@@ -93,15 +93,21 @@ class TecnicoController extends Controller
                 ->with('error', 'Esta tarea ya está marcada como completada.');
         }
 
-        // 5. Actualizar la asignación: cambiar estado y registrar fecha
+        // 5. Actualizar la asignación pivote: cambiar estado y registrar fecha
         $asignacion->update([
             'estado_asignacion' => 'Completada',
             'fecha_completado'  => now()->toDateString(),
             'observaciones'     => $validado['observaciones'] ?? null,
         ]);
 
-        // 6. Obtener la tarea principal para incluirla en el historial
+        // 6. Obtener la tarea principal
         $tarea = Tarea::findOrFail($id);
+        
+        // 6.1 SINCRONIZACIÓN CLAVE: Actualizar el estado general de la tarea 
+        // para que el Comité y el Jefe la vean como completada
+        $tarea->update([
+            'estado' => 'Completada'
+        ]);
 
         // 7. Registrar la acción en el historial de auditoría
         //    Esto permite al Comité FIFA ver quién completó qué y cuándo.
@@ -118,6 +124,6 @@ class TecnicoController extends Controller
         ]);
 
         return redirect()->route('tecnico.dashboard')
-            ->with('success', '¡Tarea "' . $tarea->titulo . '" marcada como completada!');
+            ->with('success', '¡Tarea "' . $tarea->titulo . '" marcada como completada y sincronizada!');
     }
 }
