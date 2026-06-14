@@ -16,17 +16,28 @@ use Illuminate\View\View;
  * JefeController — Lógica del panel del Jefe de Mantenimiento.
  *
  * Funcionalidades:
- *   1. dashboard(): Vista general con estadísticas y listado de tareas del estadio.
- *   2. crearTareaForm(): Formulario para crear una nueva tarea.
- *   3. storeTarea(): Persiste la nueva tarea en BD y crea registro en historial.
- *   4. asignarForm(): Formulario para asignar una tarea a uno o más técnicos.
- *   5. asignarTarea(): Crea registros en 'tarea_user' y actualiza historial.
+ * 1. dashboard(): Vista general con estadísticas y listado de tareas del estadio.
+ * 2. crearTareaForm(): Formulario para crear una nueva tarea.
+ * 3. storeTarea(): Persiste la nueva tarea en BD y crea registro en historial.
+ * 4. asignarForm(): Formulario para asignar una tarea a uno o más técnicos.
+ * 5. asignarTarea(): Crea registros en 'tarea_user' y actualiza historial.
  *
  * Acceso: Solo usuarios con rol_id = 2 (middleware 'rol.jefe' aplicado en rutas).
  * Restricción: El jefe solo puede ver y gestionar el estadio al que está asignado.
  */
 class JefeController extends Controller
 {
+    /**
+     * Helper interno para evitar errores de sincronización de sesión.
+     * Garantiza que siempre tengamos la instancia fresca de 'Usuario' con su 'estadio_id' correcto,
+     * evitando problemas si Laravel Auth está usando un modelo parcial o datos cacheados.
+     */
+    private function getJefeSincronizado(): Usuario
+    {
+        $authId = Auth::id() ?? Auth::user()->user_id;
+        return Usuario::where('user_id', $authId)->firstOrFail();
+    }
+
     /**
      * Dashboard principal del Jefe de Mantenimiento.
      *
@@ -37,7 +48,7 @@ class JefeController extends Controller
      */
     public function dashboard(): View
     {
-        $jefe = Auth::user();
+        $jefe = $this->getJefeSincronizado();
 
         // Cargar todas las tareas del estadio del jefe con sus relaciones
         $tareas = Tarea::where('estadio_id', $jefe->estadio_id)
@@ -71,7 +82,7 @@ class JefeController extends Controller
     {
         // Cargar todos los tipos de tarea disponibles para el dropdown
         $tiposTarea = TipoTarea::orderBy('nombre')->get();
-        $jefe       = Auth::user();
+        $jefe       = $this->getJefeSincronizado();
 
         return view('jefe.crear-tarea', compact('tiposTarea', 'jefe'));
     }
@@ -87,7 +98,7 @@ class JefeController extends Controller
      */
     public function storeTarea(Request $request): RedirectResponse
     {
-        $jefe = Auth::user();
+        $jefe = $this->getJefeSincronizado();
 
         // Validar todos los campos del formulario
         $validado = $request->validate([
@@ -134,7 +145,7 @@ class JefeController extends Controller
      */
     public function asignarForm(int $id): View
     {
-        $jefe = Auth::user();
+        $jefe = $this->getJefeSincronizado();
 
         // Buscar la tarea (debe pertenecer al estadio del jefe)
         $tarea = Tarea::where('tarea_id', $id)
@@ -165,7 +176,7 @@ class JefeController extends Controller
      */
     public function asignarTarea(Request $request, int $id): RedirectResponse
     {
-        $jefe = Auth::user();
+        $jefe = $this->getJefeSincronizado();
 
         // Validar que se seleccionó al menos un técnico
         $validado = $request->validate([
@@ -173,7 +184,12 @@ class JefeController extends Controller
             'user_ids.*' => ['exists:usuarios,user_id'],
         ]);
 
-        $tarea = Tarea::findOrFail($id);
+        // FIX Sincronización de seguridad: Validar que la tarea siga perteneciendo al estadio del jefe 
+        // para evitar manipulación del ID por método POST en la ruta.
+        $tarea = Tarea::where('tarea_id', $id)
+            ->where('estadio_id', $jefe->estadio_id)
+            ->firstOrFail();
+
         $asignacionesNuevas = 0;
 
         // Iterar sobre cada técnico seleccionado
