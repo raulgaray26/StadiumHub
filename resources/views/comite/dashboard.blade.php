@@ -55,6 +55,64 @@
 
 <div class="row g-4">
 
+    {{-- ─── Estado de estadios ──────────────────────────────────────── --}}
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <h6 class="mb-0 fw-semibold">
+                    <i class="bi bi-building me-2"></i>Estado por Estadio
+                </h6>
+            </div>
+            <div class="list-group list-group-flush">
+                @forelse($estadios as $est)
+                <div class="list-group-item py-3">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <div class="fw-semibold small">{{ $est->nombre }}</div>
+                            <div class="text-muted" style="font-size:0.75rem;">
+                                {{ $est->ciudad }}, {{ $est->pais }}
+                            </div>
+                        </div>
+                        <span class="badge bg-light text-dark border">
+                            <i class="bi bi-people me-1"></i>{{ $est->usuarios_count }}
+                        </span>
+                    </div>
+
+                    @php
+                        $pctEst = $est->tareas_count > 0
+                            ? round(($est->tareas_completadas / $est->tareas_count) * 100)
+                            : 0;
+                    @endphp
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="progress flex-grow-1" style="height:6px;">
+                            <div class="progress-bar bg-success" style="width:{{ $pctEst }}%;"></div>
+                        </div>
+                        <small class="text-muted text-nowrap">
+                            {{ $est->tareas_completadas }}/{{ $est->tareas_count }}
+                        </small>
+                    </div>
+
+                    {{-- Botones de acción por estadio --}}
+                    <div class="d-flex gap-2">
+                        {{-- Ver todas las tareas del estadio --}}
+                        <a href="{{ route('comite.estadio', $est->estadio_id) }}"
+                           class="btn btn-sm btn-outline-dark flex-fill">
+                            <i class="bi bi-list-task me-1"></i>Ver Tareas
+                        </a>
+                        {{-- Filtrar el historial por este estadio --}}
+                        <a href="{{ route('comite.dashboard', ['estadio_id' => $est->estadio_id]) }}"
+                           class="btn btn-sm btn-outline-secondary flex-fill">
+                            <i class="bi bi-funnel me-1"></i>Historial
+                        </a>
+                    </div>
+                </div>
+                @empty
+                    <div class="list-group-item text-center text-muted py-3">Sin estadios.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
     {{-- ─── Historial de auditoría ──────────────────────────────────── --}}
     <div class="col-lg-8">
         <div class="card">
@@ -147,71 +205,6 @@
                                     </button>
                                 </td>
                             </tr>
-
-                            {{-- ── Modal de detalle de cada registro ── --}}
-                            <div class="modal fade" id="detalle-{{ $reg->historial_id }}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h6 class="modal-title fw-bold">
-                                                <i class="bi bi-journal-text me-2"></i>
-                                                Detalle del Registro #{{ $reg->historial_id }}
-                                            </h6>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <table class="table table-sm table-bordered mb-0">
-                                                <tr>
-                                                    <th class="bg-light" style="width:35%;">Fecha / Hora</th>
-                                                    <td>
-                                                        {{ $reg->timestamp
-                                                            ? \Carbon\Carbon::parse($reg->timestamp)->format('d/m/Y H:i:s')
-                                                            : '—' }}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Acción</th>
-                                                    <td>{{ $reg->accion }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Tarea</th>
-                                                    <td>{{ $reg->tarea->titulo ?? '(eliminada)' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Estadio</th>
-                                                    <td>{{ $reg->tarea->estadio->nombre ?? '—' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Actor</th>
-                                                    <td>{{ $reg->usuario->nombre ?? '—' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Iniciado por</th>
-                                                    <td>{{ $reg->creador->nombre ?? '—' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Estado anterior</th>
-                                                    <td>{{ $reg->estado_anterior ?? '—' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Estado nuevo</th>
-                                                    <td>{{ $reg->estado_nuevo ?? '—' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th class="bg-light">Detalle</th>
-                                                    <td>{{ $reg->detalle ?? '—' }}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary btn-sm"
-                                                    data-bs-dismiss="modal">Cerrar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- Fin modal --}}
-
                             @empty
                             <tr>
                                 <td colspan="5" class="text-center py-4 text-muted">
@@ -232,64 +225,70 @@
         </div>
     </div>
 
-    {{-- ─── Estado de estadios ──────────────────────────────────────── --}}
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header bg-white py-3">
-                <h6 class="mb-0 fw-semibold">
-                    <i class="bi bi-building me-2"></i>Estado por Estadio
+</div>
+
+{{-- Modales de detalle extraídos fuera de la estructura de la tabla para evitar que el backdrop de Bootstrap se congele --}}
+@foreach($historial as $reg)
+<div class="modal fade" id="detalle-{{ $reg->historial_id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title fw-bold">
+                    <i class="bi bi-journal-text me-2"></i>
+                    Detalle del Registro #{{ $reg->historial_id }}
                 </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="list-group list-group-flush">
-                @forelse($estadios as $est)
-                <div class="list-group-item py-3">
-                    <div class="d-flex justify-content-between align-items-start mb-1">
-                        <div>
-                            <div class="fw-semibold small">{{ $est->nombre }}</div>
-                            <div class="text-muted" style="font-size:0.75rem;">
-                                {{ $est->ciudad }}, {{ $est->pais }}
-                            </div>
-                        </div>
-                        <span class="badge bg-light text-dark border">
-                            <i class="bi bi-people me-1"></i>{{ $est->usuarios_count }}
-                        </span>
-                    </div>
-
-                    @php
-                        $pctEst = $est->tareas_count > 0
-                            ? round(($est->tareas_completadas / $est->tareas_count) * 100)
-                            : 0;
-                    @endphp
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <div class="progress flex-grow-1" style="height:6px;">
-                            <div class="progress-bar bg-success" style="width:{{ $pctEst }}%;"></div>
-                        </div>
-                        <small class="text-muted text-nowrap">
-                            {{ $est->tareas_completadas }}/{{ $est->tareas_count }}
-                        </small>
-                    </div>
-
-                    {{-- Botones de acción por estadio --}}
-                    <div class="d-flex gap-2">
-                        {{-- Ver todas las tareas del estadio --}}
-                        <a href="{{ route('comite.estadio', $est->estadio_id) }}"
-                           class="btn btn-sm btn-outline-dark flex-fill">
-                            <i class="bi bi-list-task me-1"></i>Ver Tareas
-                        </a>
-                        {{-- Filtrar el historial por este estadio --}}
-                        <a href="{{ route('comite.dashboard', ['estadio_id' => $est->estadio_id]) }}"
-                           class="btn btn-sm btn-outline-secondary flex-fill">
-                            <i class="bi bi-funnel me-1"></i>Historial
-                        </a>
-                    </div>
-                </div>
-                @empty
-                    <div class="list-group-item text-center text-muted py-3">Sin estadios.</div>
-                @endforelse
+            <div class="modal-body">
+                <table class="table table-sm table-bordered mb-0">
+                    <tr>
+                        <th class="bg-light" style="width:35%;">Fecha / Hora</th>
+                        <td>
+                            {{ $reg->timestamp
+                                ? \Carbon\Carbon::parse($reg->timestamp)->format('d/m/Y H:i:s')
+                                : '—' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Acción</th>
+                        <td>{{ $reg->accion }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Tarea</th>
+                        <td>{{ $reg->tarea->titulo ?? '(eliminada)' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Estadio</th>
+                        <td>{{ $reg->tarea->estadio->nombre ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Actor</th>
+                        <td>{{ $reg->usuario->nombre ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Iniciado por</th>
+                        <td>{{ $reg->creador->nombre ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Estado anterior</th>
+                        <td>{{ $reg->estado_anterior ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Estado nuevo</th>
+                        <td>{{ $reg->estado_nuevo ?? '—' }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">Detalle</th>
+                        <td>{{ $reg->detalle ?? '—' }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
-
 </div>
+@endforeach
 
 @endsection

@@ -13,24 +13,24 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body>
+<body class="bg-light d-flex align-items-center justify-content-center min-vh-100">
 
-<div class="auth-wrapper py-5">
-    <div class="auth-card bg-white shadow-lg" style="max-width: 520px;">
+<div class="auth-wrapper py-5 w-100">
+    <div class="auth-card card bg-white shadow-lg mx-auto p-4" style="max-width: 520px; border: none;">
 
         {{-- ─── Encabezado ────────────────────────────────────────── --}}
         <div class="text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--sh-primary);">
+            <h2 class="fw-bold" style="color: #1a1a2e;">
                 <i class="bi bi-person-plus me-2"></i>Crear Cuenta
             </h2>
-            <p class="text-muted small">StadiumHub — FIFA 2026 Maintenance System</p>
+            <p class="text-muted small mb-0">StadiumHub — FIFA 2026 Maintenance System</p>
         </div>
 
         {{-- ─── Errores de validación ──────────────────────────────── --}}
         @if($errors->any())
             <div class="alert alert-danger py-2">
                 @foreach($errors->all() as $error)
-                    <div><i class="bi bi-exclamation-circle me-1"></i>{{ $error }}</div>
+                    <div class="small"><i class="bi bi-exclamation-circle me-1"></i>{{ $error }}</div>
                 @endforeach
             </div>
         @endif
@@ -41,7 +41,7 @@
 
             {{-- Campo Nombre completo --}}
             <div class="mb-3">
-                <label for="nombre" class="form-label fw-semibold">
+                <label for="nombre" class="form-label fw-semibold small">
                     <i class="bi bi-person me-1"></i>Nombre Completo
                 </label>
                 <input type="text"
@@ -58,7 +58,7 @@
 
             {{-- Campo Email --}}
             <div class="mb-3">
-                <label for="email" class="form-label fw-semibold">
+                <label for="email" class="form-label fw-semibold small">
                     <i class="bi bi-envelope me-1"></i>Correo Electrónico
                 </label>
                 <input type="email"
@@ -76,7 +76,7 @@
             {{-- Campos Contraseña en dos columnas --}}
             <div class="row mb-3">
                 <div class="col-6">
-                    <label for="password" class="form-label fw-semibold">
+                    <label for="password" class="form-label fw-semibold small">
                         <i class="bi bi-lock me-1"></i>Contraseña
                     </label>
                     <input type="password"
@@ -90,7 +90,7 @@
                     @enderror
                 </div>
                 <div class="col-6">
-                    <label for="password_confirmation" class="form-label fw-semibold">
+                    <label for="password_confirmation" class="form-label fw-semibold small">
                         Confirmar
                     </label>
                     <input type="password"
@@ -104,7 +104,7 @@
 
             {{-- Selector de Rol (OBLIGATORIO) --}}
             <div class="mb-3">
-                <label for="rol_id" class="form-label fw-semibold">
+                <label for="rol_id" class="form-label fw-semibold small">
                     <i class="bi bi-shield-check me-1"></i>Rol en el Sistema
                     <span class="text-danger">*</span>
                 </label>
@@ -128,7 +128,7 @@
 
             {{-- Selector de Estadio Asignado --}}
             <div class="mb-4">
-                <label for="estadio_id" class="form-label fw-semibold">
+                <label for="estadio_id" class="form-label fw-semibold small">
                     <i class="bi bi-building me-1"></i>Estadio Asignado
                     <span class="text-danger">*</span>
                 </label>
@@ -150,18 +150,17 @@
                 @enderror
             </div>
 
-            {{-- Botón de envío --}}
-            <button type="submit" class="btn btn-lg w-100 text-white fw-semibold"
-                    style="background-color: var(--sh-primary);">
-                <i class="bi bi-check-circle me-2"></i>Crear Mi Cuenta
+            {{-- Botón de envío incorporado --}}
+            <button type="submit" class="btn btn-dark btn-lg w-100 fw-semibold">
+                <i class="bi bi-check-circle me-2"></i>Confirmar Registro
             </button>
         </form>
 
         {{-- Enlace al login --}}
         <hr class="my-4">
-        <p class="text-center text-muted mb-0">
+        <p class="text-center text-muted mb-0 small">
             ¿Ya tienes cuenta?
-            <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">
+            <a href="{{ route('login') }}" class="text-decoration-none fw-semibold" style="color: #1a1a2e;">
                 Iniciar sesión
             </a>
         </p>
