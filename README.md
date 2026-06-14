@@ -1,58 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏟️ StadiumHub
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Materia: Lenguajes de la Programación | Periodo: 2026-1 | Estado: Completado
 
-## About Laravel
+> Sistema web de gestión de mantenimiento de césped híbrido para estadios sede de la **FIFA World Cup 2026**.
+> Construido con Laravel 11, Bootstrap 5 y MySQL.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Equipo de Trabajo
+- [Estudiante 1](https://github.com/raulgaray26)
+- [Estudiante 1](https://github.com/danielgomez-spec)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Demostración en Video
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Funcionalidad
 
-## Agentic Development
+- [x] **Autenticación por roles:** Login y registro con redirección automática según rol (Comité, Jefe, Técnico). [Commit](https://github.com/raulgaray26/StadiumHub/commit/3e24c78bdde44b4efa45dd7eaa4ff4ee8717645f)
+- [x] **Dashboard Técnico:** Visualización de tareas asignadas con fecha límite, estado y marcado de completado. [Commit](https://github.com/raulgaray26/StadiumHub/commit/c14aa5c414d0e6379f7d9cf9d4e84c4790ad1356)
+- [x] **Dashboard Jefe:** Creación de tareas, asignación a técnicos del estadio y estadísticas. [Commit](https://github.com/raulgaray26/StadiumHub/commit/ba2803d145e4dc9861428ac43f42a52e319d24f6)
+- [x] **Dashboard Comité FIFA:** Auditoría global con historial paginado y estado de todos los estadios. [Commit](https://github.com/raulgaray26/StadiumHub/commit/3d5aea5fdc8009228cd917a8ec6b7de7585db2f3)
+- [x] **Protección por Middleware:** Cada sección está protegida por middlewares de rol personalizados.
+- [x] **Log de Auditoría:** Cada acción (crear, asignar, completar) queda registrada en `historial_tareas`.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## Tecnologías
+
+`PHP 8.2` | `Laravel 11` | `Blade` | `Bootstrap 5.3` | `MySQL` | `XAMPP` | `Git / GitHub`
+
+---
+
+## Ejecución
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clonar el repositorio
+git clone https://github.com/[EDIT-tu-usuario]/StadiumHub.git
+cd StadiumHub
 
-php artisan boost:install
+# 2. Instalar dependencias PHP
+composer install
+
+# 3. Configurar entorno
+cp .env.example .env
+php artisan key:generate
+
+# 4. Configurar la base de datos en .env
+# DB_DATABASE=stadiumhub
+# DB_USERNAME=root
+# DB_PASSWORD=
+# (La BD ya debe existir en MySQL con las tablas del modelo relacional - se puede encontrar el .sql en docs)
+
+# 5. Levantar servidor de desarrollo
+php artisan serve
+
+# Acceder en: http://127.0.0.1:8000
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+> **Requisito:** XAMPP con MySQL activo. La base de datos `stadiumhub` debe existir previamente con las tablas: `roles`, `usuarios`, `estadios`, `tareas`, `tipo_tarea`, `tarea_user`, `historial_tareas`.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Métricas de Progreso
 
-## Code of Conduct
+| Indicador | Valor |
+|---|---|
+| Commits totales | 30 |
+| Pull Requests fusionados | 12/16 |
+| Última actualización | 2026-06-14 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Reflexión y Aprendizajes
+> **Reflexión final:** Construir StadiumHub fue un reto que nos sacó de la zona de confort. Pasamos de la teoría a lidiar con problemas reales de lógica y control de versiones, pero ver el sistema funcionando fluido para los tres roles hizo que cada dolor de cabeza valiera la pena.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Habilidades desarrolladas:**
+  - Entender a fondo el patrón MVC en Laravel y sacarle provecho a las plantillas Blade.
+  - Trabajo colaborativo real con Git, perdiéndole el miedo a la terminal y a resolver conflictos de merge.
+  - Diseño ágil de interfaces utilizando las clases de Bootstrap 5 para no estancarnos en el CSS.
 
-## License
+- **Qué funcionó bien:**
+  - Separar las responsabilidades y el ruteo por roles (Comité, Jefe, Técnico) desde el principio. Nos permitió avanzar en paralelo sin pisarnos el código.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Qué se podría mejorar:**
+  - Añadir pruebas unitarias para no tener que testear cada vez que hacíamos un cambio.
+
+- **Conceptos clave aplicados de la materia:**
+  - Middlewares para la protección de rutas, Eloquent ORM para evitar el SQL puro en relaciones complejas, y el sistema de autenticación de Laravel.
