@@ -69,14 +69,14 @@ php artisan serve
 
 | Indicador | Valor |
 |---|---|
-| Commits totales | 30 |
+| Commits totales | 33 |
 | Pull Requests fusionados | 12/16 |
 | Última actualización | 2026-06-14 |
 
 ---
 
 ## Reflexión y Aprendizajes
-> **Reflexión final:** Construir StadiumHub fue un reto que nos sacó de la zona de confort. Pasamos de la teoría a lidiar con problemas reales de lógica y control de versiones, pero ver el sistema funcionando fluido para los tres roles hizo que cada dolor de cabeza valiera la pena.
+> **Reflexión final:** Construir StadiumHub fue un reto que nos sacó de la zona de confort. Pasamos de la teoría a lidiar con problemas reales de lógica y control de versiones, pero ver el sistema funcionando fluido para los tres roles.
 
 - **Habilidades desarrolladas:**
   - Entender a fondo el patrón MVC en Laravel y sacarle provecho a las plantillas Blade.
